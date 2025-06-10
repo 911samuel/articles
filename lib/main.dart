@@ -4,6 +4,7 @@ import 'package:articles/ui/post/posts_screen.dart';
 import 'package:articles/ui/post/posts_view_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'ui/core/theme.dart';
 
 void main() {
   runApp(
@@ -16,6 +17,9 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => PostsViewModal(context.read<PostRepository>()),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeNotifier(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -27,10 +31,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = context.watch<ThemeNotifier>();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'News Articles',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeNotifier.themeMode,
       home: const PostsScreen(),
     );
   }

@@ -1,39 +1,45 @@
+
+
 import 'dart:io';
 
 import 'package:articles/data/repositories/post_repository.dart';
 import 'package:articles/domain/models.dart';
 import 'package:flutter/foundation.dart';
+import 'package:articles/utils/command.dart';
+import 'package:articles/utils/result.dart';
 
 class PostsViewModal extends ChangeNotifier {
-  PostsViewModal(this._repository);
+  PostsViewModal(this._repository) {
+    fetchPostsCommand.addListener(() {
+      notifyListeners();
+    });
+  }
   final PostRepository _repository;
 
-  List<Post> _posts = [];
-  bool _isLoading = false;
-  String? _errorMessage;
+  List<Post> get posts => fetchPostsCommand.result is Ok<List<Post>>
+      ? (fetchPostsCommand.result as Ok<List<Post>>).value
+      : [];
+  bool get isLoading => fetchPostsCommand.running;
+  String? get errorMessage => fetchPostsCommand.result is Error<List<Post>>
+      ? (fetchPostsCommand.result as Error<List<Post>>).error.toString()
+      : null;
 
-  List<Post> get posts => _posts;
-  bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
+  late final Command0<List<Post>> fetchPostsCommand = Command0<List<Post>>(() async {
+    try {
+      final posts = await _repository.fetchPosts();
+      return Result.ok(posts);
+    } on SocketException {
+      return Result.error(Exception('No internet connection'));
+    } on HttpException {
+      return Result.error(Exception('Could not fetch posts'));
+    } on FormatException {
+      return Result.error(Exception('Bad response format'));
+    } catch (e) {
+      return Result.error(Exception('Failed to load posts: \$e'));
+    }
+  });
 
   Future<void> fetchPosts() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      _posts = await _repository.fetchPosts();
-    } on SocketException {
-      _errorMessage = 'No internet connection';
-    } on HttpException {
-      _errorMessage = 'Could not fetch posts';
-    } on FormatException {
-      _errorMessage = 'Bad response format';
-    } catch (e) {
-      _errorMessage = 'Failed to load posts: ${e.toString()}';
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    await fetchPostsCommand.execute();
   }
 }

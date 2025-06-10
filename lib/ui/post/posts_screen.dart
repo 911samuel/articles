@@ -1,5 +1,6 @@
 import 'package:articles/ui/core/ui/post_card.dart';
 import 'package:articles/ui/post/posts_view_modal.dart';
+import 'package:articles/ui/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,9 +23,21 @@ class _PostScreenState extends State<PostsScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModal = Provider.of<PostsViewModal>(context);
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text("News Articles")),
+      appBar: AppBar(
+        title: Text("News Articles"),
+        actions: [
+          IconButton(
+            icon: Icon(themeNotifier.themeMode == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
+            onPressed: () {
+              themeNotifier.toggleTheme();
+            },
+            tooltip: 'Toggle Theme',
+          ),
+        ],
+      ),
       body: _builBody(viewModal),
     );
   }
