@@ -1,6 +1,6 @@
-import 'package:articles/ui/core/ui/post_card.dart';
+import 'package:articles/core/ui/post_card.dart';
 import 'package:articles/ui/post/posts_view_modal.dart';
-import 'package:articles/ui/core/theme.dart';
+import 'package:articles/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

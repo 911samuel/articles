@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:articles/domain/models.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:articles/const/constants.dart';
 
 class PostService {
   Future<List<Post>> fetchPosts() async {
-    final url = Uri.parse(
-      'https://newsapi.org/v2/everything?q=apple&from=2025-05-19&to=2025-05-19&sortBy=popularity&apiKey=137dee1cfd874df88413635ec5406229',
-    );
+    final apiKey = dotenv.env['API_KEY'] ?? '';
+    final url = Uri.parse('${Constants.baseUrl}&apiKey=$apiKey');
 
     try {
       final response = await http.get(url);
