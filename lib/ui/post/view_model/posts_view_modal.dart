@@ -1,10 +1,8 @@
-
-
 import 'dart:io';
 
 import 'package:articles/data/repositories/post_repository.dart';
 import 'package:articles/domain/models.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:articles/utils/command.dart';
 import 'package:articles/utils/result.dart';
 
@@ -40,6 +38,8 @@ class PostsViewModal extends ChangeNotifier {
   });
 
   Future<void> fetchPosts() async {
-    await fetchPostsCommand.execute();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await fetchPostsCommand.execute();
+    });
   }
 }

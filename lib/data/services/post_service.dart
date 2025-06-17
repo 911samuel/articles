@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:articles/domain/models.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:articles/const/constants.dart';
+import 'package:articles/core/const/constants.dart';
 
 class PostService {
   Future<List<Post>> fetchPosts() async {
